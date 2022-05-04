@@ -1,0 +1,6 @@
+[kubernetes-master-nodes]
+master.kpp.com ansible_host=192.168.2.1
+
+[kubernetes-worker-nodes]
+worker01.kpp.com ansible_host=192.168.2.2
+worker02.kpp.com ansible_host=192.168.2.3
