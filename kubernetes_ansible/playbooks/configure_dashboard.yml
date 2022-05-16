@@ -1,0 +1,11 @@
+---
+- hosts: kubernetes-master-nodes
+  tasks:
+  - name: Copy Dashboard Configfile
+     copy:
+       src: ./Kubernetes-Ansible/kubernetes_ansible/kubernetes-dashboard.yaml
+       dest: ./kubernetes-dashboard.yaml
+   - name: Install Dashboard
+     #become: false
+     command: kubectl apply -f kubernetes-dashboard.yaml
+     #command: kubectl apply -f https://github.com/shoeb816/Kubernetes-Ansible/blob/master/kubernetes_ansible/kubernetes-dashboard.yaml
