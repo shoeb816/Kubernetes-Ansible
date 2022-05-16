@@ -1,14 +1,39 @@
 ---
+#- hosts: kubernetes-worker-nodes
+#  vars_files:
+#  - env_variables
+#  tasks:
+#  - name: Copying token to worker nodes
+#    copy: src={{ token_file }} dest=join_token
+#
+#  - name: Joining worker nodes with kubernetes master
+#    shell: |
+#     kubeadm reset
+#     cat join_token | tail -2 > out.sh
+#     chmod 755 out.sh
+#     sh out.sh
+
+- hosts: kubernetes-master-nodes
+  vars_files:
+  - env_variables
+  #become: yes
+  gather_facts: false
+  tasks:
+    - name: get join command
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+    - name: set join command
+      set_fact:
+        join_command: "{{ join_command_raw.stdout_lines[0] }}"
+
 - hosts: kubernetes-worker-nodes
   vars_files:
   - env_variables
+  #become: yes
   tasks:
-  - name: Copying token to worker nodes
-    copy: src={{ token_file }} dest=join_token
-
-  - name: Joining worker nodes with kubernetes master
-    shell: |
-     kubeadm reset
-     cat join_token | tail -2 > out.sh
-     chmod 755 out.sh
-     sh out.sh
+    - name: join cluster
+      shell: "{{ hostvars['kubernetes-master-nodes'].join_command }} >> node_joined.txt"
+      args:
+        chdir: $HOME
+        creates: node_joined.txt
