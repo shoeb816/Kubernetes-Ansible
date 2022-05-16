@@ -1,0 +1,4 @@
+
+---
+- import_playbook: playbooks/configure_dashboard.yml
+- import_playbook: playbooks/configure_metrics_server.yml
